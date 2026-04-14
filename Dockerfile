@@ -1,11 +1,11 @@
-# 1. 자바 17 환경 사용
-FROM openjdk:17-jdk-slim
+FROM gradle:7.6-jdk17 AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
 
-# 2. 빌드된 실행 파일(jar)의 위치 지정
-ARG JAR_FILE=build/libs/*.jar
+RUN gradle build -x test --no-daemon
 
-# 3. 파일을 컨테이너 안으로 복사
-COPY ${JAR_FILE} app.jar
+FROM eclipse-temurin:17-jre-focal
+EXPOSE 8080
 
-# 4. 서버 실행!
+COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
