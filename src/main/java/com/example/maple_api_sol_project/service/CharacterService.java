@@ -1,0 +1,30 @@
+package com.example.maple_api_sol_project.service;
+
+import com.example.maple_api_sol_project.dto.CharacterBasicResponse;
+import com.example.maple_api_sol_project.dto.CharacterOcidResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+@RequiredArgsConstructor
+public class CharacterService {
+
+    private final RestTemplate restTemplate;
+
+    @Value("${maple.api.base-url}")
+    private String baseUrl;
+
+    public String getOcid(String characterName) {
+        String url = baseUrl + "/maplestory/v1/id?character_name=" + characterName;
+        CharacterOcidResponse response = restTemplate.getForObject(url, CharacterOcidResponse.class);
+        return response.getOcid();
+    }
+
+    public CharacterBasicResponse getCharacterBasic(String characterName) {
+        String ocid = getOcid(characterName);
+        String url = baseUrl + "/maplestory/v1/character/basic?ocid=" + ocid;
+        return restTemplate.getForObject(url, CharacterBasicResponse.class);
+    }
+}
