@@ -2,6 +2,7 @@ package com.example.maple_api_sol_project.service;
 
 import com.example.maple_api_sol_project.dto.CharacterBasicResponse;
 import com.example.maple_api_sol_project.dto.CharacterOcidResponse;
+import com.example.maple_api_sol_project.exception.CharacterNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,13 @@ public class CharacterService {
     private String baseUrl;
 
     public String getOcid(String characterName) {
-        String url = baseUrl + "/maplestory/v1/id?character_name=" + characterName;
-        CharacterOcidResponse response = restTemplate.getForObject(url, CharacterOcidResponse.class);
-        return response.getOcid();
+        try {
+            String url = baseUrl + "/maplestory/v1/id?character_name=" + characterName;
+            CharacterOcidResponse response = restTemplate.getForObject(url, CharacterOcidResponse.class);
+            return response.getOcid();
+        } catch (Exception e) {
+            throw new CharacterNotFoundException(characterName);
+        }
     }
 
     public CharacterBasicResponse getCharacterBasic(String characterName) {
