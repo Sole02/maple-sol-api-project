@@ -1,6 +1,7 @@
 package com.example.maple_api_sol_project.controller;
 
 import com.example.maple_api_sol_project.dto.CharacterBasicResponse;
+import com.example.maple_api_sol_project.dto.CharacterStatResponse;
 import com.example.maple_api_sol_project.service.CharacterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,11 @@ public class CharacterController {
     public ResponseEntity<CharacterBasicResponse> getCharacter(@PathVariable String name) {
         CharacterBasicResponse character = characterService.getCharacterBasic(name);
         return ResponseEntity.ok(character);
+    }
+
+    @GetMapping("/{name}/stat")
+    public ResponseEntity<CharacterStatResponse> getCharacterStat(@PathVariable String name) {
+        CharacterStatResponse stat = characterService.getCharacterStat(name);
+        return ResponseEntity.ok(stat);
     }
 }
